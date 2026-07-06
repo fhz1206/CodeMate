@@ -3,477 +3,624 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeMate - 终端里的AI编程搭档</title>
+    <title>CodeMate · AI 终端编程助手</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* ── Reset & Base ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            min-height: 100vh;
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            line-height: 1.7;
         }
+        a { color: #58a6ff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+        /* ── Container ── */
+        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
 
-        header {
+        /* ── Hero ── */
+        .hero {
+            padding: 100px 0 80px;
             text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border-radius: 20px;
-            margin-bottom: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+            border-bottom: 1px solid #30363d;
         }
-
-        .logo {
-            font-size: 4em;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .hero-logo {
+            font-size: 56px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #79c0ff, #58a6ff, #1f6feb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 16px;
         }
-
-        .subtitle {
-            font-size: 1.3em;
-            color: #a0a0a0;
-            margin-bottom: 30px;
+        .hero-sub {
+            font-size: 20px;
+            color: #8b949e;
+            max-width: 600px;
+            margin: 0 auto 32px;
         }
-
-        .badges {
+        .hero-badges {
             display: flex;
-            gap: 15px;
             justify-content: center;
+            gap: 12px;
             flex-wrap: wrap;
+            margin-bottom: 40px;
         }
-
-        .badge {
-            padding: 8px 20px;
-            background: rgba(102, 126, 234, 0.2);
-            border: 1px solid rgba(102, 126, 234, 0.5);
-            border-radius: 30px;
-            font-size: 14px;
+        .hero-badges span {
+            background: #21262d;
+            color: #c9d1d9;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid #30363d;
         }
-
-        .badge a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .badge a:hover {
-            color: #764ba2;
-        }
-
-        .section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .section-title {
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title .icon {
-            font-size: 1.2em;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(102, 126, 234, 0.5);
-        }
-
-        .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            color: #667eea;
-        }
-
-        .feature-card p {
-            color: #b0b0b0;
-            line-height: 1.6;
-        }
-
-        .code-block {
-            background: #1a1a2e;
-            border-radius: 10px;
-            padding: 20px;
-            overflow-x: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .code-block pre {
-            color: #e0e0e0;
-            font-family: 'Fira Code', 'Monaco', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .code-block .comment {
-            color: #6a9955;
-        }
-
-        .code-block .keyword {
-            color: #569cd6;
-        }
-
-        .code-block .string {
-            color: #ce9178;
-        }
-
-        .providers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .provider-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            transition: all 0.3s;
-        }
-
-        .provider-card:hover {
-            transform: scale(1.05);
-            border-color: rgba(102, 126, 234, 0.6);
-        }
-
-        .provider-name {
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .provider-model {
-            font-size: 0.9em;
-            color: #a0a0a0;
-        }
-
-        .architecture {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .arch-layer {
-            background: rgba(102, 126, 234, 0.1);
-            padding: 15px 30px;
-            border-radius: 10px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            text-align: center;
-            min-width: 200px;
-        }
-
-        .arch-arrow {
-            font-size: 1.5em;
-            color: #667eea;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 10px;
-        }
-
-        .stat-value {
-            font-size: 2em;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #a0a0a0;
-            margin-top: 5px;
-        }
-
-        .cta-section {
-            text-align: center;
-            padding: 50px 20px;
-        }
-
         .btn {
             display: inline-block;
-            padding: 15px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-size: 1.1em;
+            padding: 14px 36px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
-            transition: all 0.3s;
-            margin: 0 10px;
+            transition: all .2s;
+            cursor: pointer;
+            border: none;
         }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        .btn-primary {
+            background: #238636;
+            color: #fff;
         }
-
-        .btn-secondary {
+        .btn-primary:hover {
+            background: #2ea043;
+            text-decoration: none;
+        }
+        .btn-outline {
             background: transparent;
-            border: 2px solid #667eea;
-            color: #667eea;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+        }
+        .btn-outline:hover {
+            background: #21262d;
+            text-decoration: none;
+        }
+        .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+        /* ── Terminal preview ── */
+        .terminal-preview {
+            margin: 0 auto 80px;
+            max-width: 780px;
+            background: #161b22;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #21262d;
+            border-bottom: 1px solid #30363d;
+        }
+        .terminal-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+        }
+        .terminal-dot:nth-child(1) { background: #ff6b6b; }
+        .terminal-dot:nth-child(2) { background: #ffd93d; }
+        .terminal-dot:nth-child(3) { background: #6bcb77; }
+        .terminal-title {
+            color: #8b949e;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+        .terminal-body {
+            padding: 20px 24px;
+            font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #e6edf3;
+        }
+        .terminal-body .prompt { color: #3fb950; }
+        .terminal-body .cmd { color: #e6edf3; }
+        .terminal-body .output { color: #8b949e; }
+        .terminal-body .highlight { color: #58a6ff; }
+        .terminal-body .dim { color: #484f58; }
+        .blink { animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ── Sections ── */
+        section { padding: 80px 0; }
+        section:nth-child(even) { background: #161b22; }
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .section-desc {
+            text-align: center;
+            color: #8b949e;
+            max-width: 600px;
+            margin: 0 auto 60px;
+            font-size: 16px;
         }
 
-        .btn-secondary:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: #764ba2;
-            border-color: #764ba2;
+        /* ── Features grid ── */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
+        .feature-card {
+            background: #21262d;
+            border-radius: 12px;
+            padding: 28px;
+            border: 1px solid #30363d;
+            transition: border-color .2s;
+        }
+        .feature-card:hover { border-color: #58a6ff; }
+        .feature-icon { font-size: 28px; margin-bottom: 12px; }
+        .feature-card h3 { font-size: 18px; margin-bottom: 10px; }
+        .feature-card p { font-size: 14px; color: #8b949e; }
 
+        /* ── Providers table ── */
+        .providers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .providers-table th, .providers-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+            font-size: 14px;
+        }
+        .providers-table th {
+            color: #8b949e;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        .providers-table td { color: #c9d1d9; }
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .tag-green { background: #23863620; color: #3fb950; border: 1px solid #23863640; }
+        .tag-blue { background: #1f6feb20; color: #58a6ff; border: 1px solid #1f6feb40; }
+        .tag-yellow { background: #d2992220; color: #d29922; border: 1px solid #d2992240; }
+
+        /* ── Code block ── */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px 24px;
+            font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        .code-block .comment { color: #484f58; }
+        .code-block .key { color: #79c0ff; }
+        .code-block .str { color: #a5d6ff; }
+        .code-block .num { color: #d2a8ff; }
+
+        /* ── Commands list ── */
+        .cmd-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        .cmd-item {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+        .cmd-key {
+            font-family: monospace;
+            color: #58a6ff;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .cmd-desc { color: #8b949e; }
+
+        /* ── Footer ── */
         footer {
             text-align: center;
-            padding: 30px;
-            color: #666;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 40px;
+            padding: 40px 0;
+            border-top: 1px solid #30363d;
+            color: #484f58;
+            font-size: 13px;
         }
+        footer a { color: #8b949e; }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-            
-            .subtitle {
-                font-size: 1em;
-            }
-            
-            .section {
-                padding: 20px;
-            }
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .hero { padding: 60px 0 40px; }
+            .hero-logo { font-size: 36px; }
+            .hero-sub { font-size: 16px; }
+            .terminal-body { font-size: 12px; padding: 14px 16px; }
+            section { padding: 50px 0; }
+            .section-title { font-size: 24px; }
         }
     </style>
 </head>
 <body>
+
+<!-- ════════════════ Hero ════════════════ -->
+<header class="hero">
     <div class="container">
-        <header>
-            <div class="logo">🤖</div>
-            <h1>CodeMate</h1>
-            <p class="subtitle">终端里的 AI 编程搭档 — 支持多模型、自动备份、中英文双语</p>
-            <div class="badges">
-                <span class="badge">📝 Python</span>
-                <span class="badge">🔒 MIT License</span>
-                <span class="badge">⬇️ 3 Downloads</span>
-                <span class="badge">
-                    <a href="https://gitcode.com/fhz1206/CodeMate" target="_blank">GitCode 仓库</a>
-                </span>
-            </div>
-        </header>
-
-        <div class="section">
-            <h2 class="section-title"><span class="icon">✨</span>核心特性</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🧠</div>
-                    <h3>多模型支持</h3>
-                    <p>支持 DeepSeek、OpenAI GPT-4o、Anthropic Claude、本地 Ollama 等多种大语言模型，灵活切换。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💾</div>
-                    <h3>自动备份</h3>
-                    <p>每次文件修改前自动备份原始文件，支持多轮次备份，防止代码丢失，安全无忧。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🌐</div>
-                    <h3>中英双语</h3>
-                    <p>完整的中英文界面支持，通过 <code>/lang</code> 命令一键切换，满足不同用户需求。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛠️</div>
-                    <h3>强大工具集</h3>
-                    <p>内置文件读写/搜索、Shell 执行、网络搜索等工具，让 AI 直接操作你的项目文件。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📦</div>
-                    <h3>项目索引</h3>
-                    <p>自动建立项目结构索引，AI 快速理解代码库，提供更精准的上下文感知 assistance。</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>ReAct 架构</h3>
-                    <p>采用 Reason + Act 循环模式，AI 能够自主推理、调用工具、验证结果，完成复杂编程任务。</p>
-                </div>
-            </div>
+        <div class="hero-logo">CodeMate</div>
+        <p class="hero-sub">
+            终端里的 AI 编程搭档 — 支持多模型、自动备份、中英文双语
+        </p>
+        <div class="hero-badges">
+            <span>🐍 Python 3.11+</span>
+            <span>🤖 多模型支持</span>
+            <span>🔒 自动备份</span>
+            <span>🌐 中/英文</span>
         </div>
-
-        <div class="section">
-            <h2 class="section-title"><span class="icon">🚀</span>快速开始</h2>
-            <div class="code-block">
-                <pre><span class="comment"># 1. 安装依赖</span>
-pip install rich prompt_toolkit httpx pydantic pydantic-settings pyyaml
-pip install -e .
-
-<span class="comment"># 2. 配置 codemate.toml（填入你的 API Key）</span>
-
-<span class="comment"># 3. 启动</span>
-python -m codemate</pre>
-            </div>
+        <div class="hero-actions">
+            <a href="#quickstart" class="btn btn-primary">快速开始</a>
+            <a href="https://gitcode.com/fhz1206/CodeMate" class="btn btn-outline" target="_blank">GitCode →</a>
         </div>
-
-        <div class="section">
-            <h2 class="section-title"><span class="icon">🔌</span>支持的 LLM 提供商</h2>
-            <div class="providers-grid">
-                <div class="provider-card">
-                    <div class="provider-name">DeepSeek</div>
-                    <div class="provider-model">deepseek-chat</div>
-                </div>
-                <div class="provider-card">
-                    <div class="provider-name">OpenAI</div>
-                    <div class="provider-model">gpt-4o / GPT-4</div>
-                </div>
-                <div class="provider-card">
-                    <div class="provider-name">Anthropic</div>
-                    <div class="provider-model">Claude Sonnet 4</div>
-                </div>
-                <div class="provider-card">
-                    <div class="provider-name">Ollama</div>
-                    <div class="provider-model">qwen2.5-coder / 本地模型</div>
-                </div>
-                <div class="provider-card">
-                    <div class="provider-name">OpenAI 兼容</div>
-                    <div class="provider-model">自定义 API</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title"><span class="icon">🏗️</span>系统架构</h2>
-            <div class="architecture">
-                <div class="arch-layer">👤 用户输入</div>
-                <div class="arch-arrow">↓</div>
-                <div class="arch-layer">🖥️ CLI 终端界面</div>
-                <div class="arch-arrow">↓</div>
-                <div class="arch-layer">🔄 Agent 循环 (ReAct)</div>
-                <div class="arch-arrow">↓</div>
-                <div class="arch-layer">🧠 LLM Provider</div>
-                <div class="arch-arrow">↓</div>
-                <div class="arch-layer">🔧 工具调用 (文件/Shell/网络)</div>
-                <div class="arch-arrow">↓</div>
-                <div class="arch-layer">✅ 结果回传 & 执行</div>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title"><span class="icon">⚙️</span>项目结构</h2>
-            <div class="code-block">
-                <pre>codemate/
-├── __main__.py              # 程序入口
-├── cli.py                   # 终端交互界面
-├── i18n.py                  # 国际化 (中/英文)
-├── config/
-│   └── settings.py          # 配置管理 (TOML + 环境变量)
-├── llm/
-│   ├── providers.py         # 服务商工厂
-│   ├── openai_compat.py     # OpenAI 兼容 API
-│   └── anthropic_provider.py # Anthropic Claude API
-├── agent/
-│   ├── agent.py             # Agent 主循环
-│   ├── context.py           # 对话上下文管理
-│   └── tool_runner.py       # 工具调度执行
-├── tools/
-│   ├── file_tools.py        # 文件读写/搜索
-│   ├── shell_tools.py       # Shell 执行
-│   ├── web_tools.py         # 网络搜索
-│   └── backup.py            # 文件备份管理
-└── project/
-    └── indexer.py           # 项目结构索引</pre>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title"><span class="icon">📊</span>项目统计</h2>
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value">100%</div>
-                    <div class="stat-label">Python</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">MIT</div>
-                    <div class="stat-label">开源协议</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label">Downloads</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">Active</div>
-                    <div class="stat-label">开发状态</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <a href="https://gitcode.com/fhz1206/CodeMate" class="btn" target="_blank">
-                ⭐ 查看仓库
-            </a>
-            <a href="https://gitcode.com/fhz1206/CodeMate/raw/main/codemate.toml" class="btn btn-secondary" target="_blank">
-                📥 下载配置示例
-            </a>
-        </div>
-
-        <footer>
-            <p>© 2025 CodeMate | 由 fhz1206 开发维护 | 基于 MIT 协议开源</p>
-            <p>当前最新版本:v0.1.0 </p>
-        </footer>
     </div>
+</header>
+
+<!-- ════════════════ Terminal Preview ════════════════ -->
+<div class="container">
+    <div class="terminal-preview">
+        <div class="terminal-header">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-title">codemate</span>
+        </div>
+        <div class="terminal-body">
+            <span class="prompt">$</span> python -m codemate<br>
+            <span class="dim">┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈</span><br>
+            <span class="highlight">  CodeMate v0.1.0</span><br>
+            <span class="output">  终端 AI 编程助手</span><br>
+            <span class="dim">┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈</span><br>
+            <span class="output">Config file: codemate.toml</span><br>
+            <span class="output">Active provider: stepfun</span><br>
+            <span class="output">Project: CodeMate (25 files)</span><br>
+            <span class="dim">─────────────────────</span><br>
+            <span class="dim">Commands:  /help  /status  /providers  /lang  /history  /exit</span><br>
+            <span class="dim">┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈</span><br>
+            <span class="prompt">>>> </span><span class="cmd">/lang zh</span><br>
+            <span class="output">✓ 语言已切换为中文</span><br>
+            <span class="prompt">>>> </span><span class="cmd">你是谁</span><br>
+            <span class="output">我是 CodeMate，由 AtomGit 开发的 AI 编程助手，</span><br>
+            <span class="output">当前运行在 stepfun 的 step-3.7-flash 模型上。</span><br>
+            <span class="prompt">>>> </span><span class="blink">▊</span>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════ Features ════════════════ -->
+<section id="features">
+    <div class="container">
+        <h2 class="section-title">核心功能</h2>
+        <p class="section-desc">CodeMate 把 AI 能力带到你的终端，像搭档一样帮你写代码</p>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>多模型支持</h3>
+                <p>兼容 DeepSeek、OpenAI、Anthropic Claude、Ollama 等任意 OpenAI 兼容 API，通过 TOML 配置文件自由切换。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📂</div>
+                <h3>文件操作</h3>
+                <p>读取、写入、编辑、搜索文件和目录，AI 直接操作你的代码库，像有经验的开发者一样高效。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3>Shell 执行</h3>
+                <p>在终端中直接运行命令、执行测试、管理 Git 提交，AI 会读取输出并据此调整下一步操作。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>代码理解</h3>
+                <p>项目索引、符号搜索、引用追踪、代码审查 — AI 深入理解你的项目结构。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>自动备份</h3>
+                <p>每次修改文件前自动备份原始内容，按对话轮次组织，超出配置数量自动清理，放心让 AI 改代码。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>中英文双语</h3>
+                <p>内置中英文双语支持，输入 `/lang zh` 或 `/lang en` 即可即时切换，LLM 也会用对应语言回复。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Providers ════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">支持的模型服务商</h2>
+        <p class="section-desc">通过 <code>codemate.toml</code> 自由配置和切换</p>
+        <table class="providers-table">
+            <thead>
+                <tr>
+                    <th>提供商</th>
+                    <th>类型</th>
+                    <th>默认模型</th>
+                    <th>需 API Key</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>DeepSeek</td>
+                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
+                    <td>deepseek-chat</td>
+                    <td>✅</td>
+                </tr>
+                <tr>
+                    <td>OpenAI</td>
+                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
+                    <td>gpt-4o</td>
+                    <td>✅</td>
+                </tr>
+                <tr>
+                    <td>Anthropic</td>
+                    <td><span class="tag tag-blue">Anthropic</span></td>
+                    <td>claude-sonnet-4</td>
+                    <td>✅</td>
+                </tr>
+                <tr>
+                    <td>Ollama</td>
+                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
+                    <td>qwen2.5-coder</td>
+                    <td>❌ 本地</td>
+                </tr>
+                <tr>
+                    <td>阶跃星辰</td>
+                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
+                    <td>step-3.7-flash</td>
+                    <td>✅</td>
+                </tr>
+                <tr>
+                    <td>任意自定义</td>
+                    <td><span class="tag tag-yellow">自定义</span></td>
+                    <td>任意</td>
+                    <td>可选</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ════════════════ Quick Start ════════════════ -->
+<section id="quickstart">
+    <div class="container">
+        <h2 class="section-title">快速开始</h2>
+        <p class="section-desc">三步启动你的 AI 编程搭档</p>
+
+        <h3 style="margin-top: 40px; font-size: 18px;">1️⃣ 安装</h3>
+        <div class="code-block">
+            pip install rich prompt_toolkit httpx<br>
+            pip install -e .
+        </div>
+
+        <h3 style="margin-top: 32px; font-size: 18px;">2️⃣ 配置 <code>codemate.toml</code></h3>
+        <div class="code-block">
+            <span class="comment"># 项目根目录下创建 codemate.toml</span><br>
+            default_provider = <span class="str">"deepseek"</span><br>
+            language = <span class="str">"zh"</span><br>
+            <br>
+            [providers.deepseek]<br>
+            type     = <span class="str">"openai"</span><br>
+            api_key  = <span class="str">"sk-你的Key"</span><br>
+            model    = <span class="str">"deepseek-chat"</span><br>
+            base_url = <span class="str">"https://api.deepseek.com"</span>
+        </div>
+
+        <h3 style="margin-top: 32px; font-size: 18px;">3️⃣ 启动</h3>
+        <div class="code-block">
+            python -m codemate
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Commands ════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">命令一览</h2>
+        <p class="section-desc">输入 <code>/</code> 后按 Tab 自动补全</p>
+        <div class="cmd-list">
+            <div class="cmd-item">
+                <span class="cmd-key">/help</span>
+                <span class="cmd-desc">显示帮助</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/clear</span>
+                <span class="cmd-desc">清除对话历史</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/status</span>
+                <span class="cmd-desc">查看项目状态和配置</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/providers</span>
+                <span class="cmd-desc">查看 codemate.toml 配置</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/lang zh</span>
+                <span class="cmd-desc">切换中文</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/lang en</span>
+                <span class="cmd-desc">切换英文</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/history</span>
+                <span class="cmd-desc">查看对话历史</span>
+            </div>
+            <div class="cmd-item">
+                <span class="cmd-key">/exit</span>
+                <span class="cmd-desc">退出</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Backup ════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">自动备份</h2>
+        <p class="section-desc">AI 修改文件前的安全网</p>
+        <div style="max-width: 600px; margin: 0 auto;">
+            <div class="code-block">
+                .codemate/<br>
+                └── backups/<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;├── round_1/<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── src/main.py&nbsp;&nbsp;<span class="comment">← 修改前的原始文件</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;├── round_2/<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── src/main.py<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;└── round_3/
+            </div>
+            <p style="color: #8b949e; font-size: 14px; text-align: center;">
+                每次对话自动创建新轮次，超出 <code>backup_rounds</code> 配置的旧备份自动清理
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Download ════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">下载</h2>
+        <p class="section-desc">Windows 可执行文件，下载即用，无需安装 Python</p>
+        <div style="text-align: center; margin: 40px 0;">
+            <a href="https://github.com/fhz1206/CodeMate/releases/download/v0.1.0/codemate.exe" class="btn btn-primary" style="font-size: 20px; padding: 18px 48px;">
+                ⬇ 下载 codemate.exe
+            </a>
+            <p style="margin-top: 16px; color: #8b949e; font-size: 14px;">
+                版本 v0.1.0 · Windows 64位 · 已下载 <span id="download-count">加载中...</span> 次
+            </p>
+        </div>
+        <div class="code-block" style="text-align: center;">
+            <span class="comment"># 也可用 pip 安装</span><br>
+            pip install rich prompt_toolkit httpx<br>
+            pip install -e .<br>
+            python -m codemate
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Changelog ════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">更新日志</h2>
+        <p class="section-desc">CodeMate 开发历程</p>
+
+        <div style="max-width: 640px; margin: 0 auto;">
+            <div class="feature-card" style="margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3 style="margin: 0;">v0.1.0</h3>
+                    <span style="color: #8b949e; font-size: 13px;">2026-07-06</span>
+                </div>
+                <ul style="color: #8b949e; font-size: 14px; padding-left: 20px; line-height: 2;">
+                    <li>初始发布，支持多模型服务商（DeepSeek / OpenAI / Anthropic / Ollama / 阶跃星辰）</li>
+                    <li>TOML 配置文件管理，环境变量可覆盖</li>
+                    <li>文件读写 / 编辑 / 搜索 / Shell 执行 / 网络搜索 等工具</li>
+                    <li>自动备份 — 每次修改文件前保留原始副本</li>
+                    <li>对话历史持久化，按项目-时间组织</li>
+                    <li>中英文双语界面，一键切换</li>
+                    <li>Tab 自动补全 / 命令</li>
+                    <li>PyInstaller 打包，Windows .exe 下载即用</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Architecture ════════════════ -->
+<section>
+    <div class="container">
+        <h2 class="section-title">项目架构</h2>
+        <p class="section-desc">纯粹的 Python 3.11+，25 个文件，3 个依赖</p>
+        <div class="code-block">
+            codemate/<br>
+            ├── __main__.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 入口</span><br>
+            ├── cli.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 终端交互界面</span><br>
+            ├── i18n.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 国际化（中/英文）</span><br>
+            ├── config/<br>
+            │&nbsp;&nbsp;└── settings.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># TOML + 环境变量配置</span><br>
+            ├── llm/<br>
+            │&nbsp;&nbsp;├── prompts.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 系统提示词</span><br>
+            │&nbsp;&nbsp;├── providers.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 服务商工厂</span><br>
+            │&nbsp;&nbsp;├── openai_compat.py&nbsp;&nbsp;<span class="comment"># OpenAI 兼容 API</span><br>
+            │&nbsp;&nbsp;└── anthropic_provider.py <span class="comment"># Claude API</span><br>
+            ├── agent/<br>
+            │&nbsp;&nbsp;├── agent.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Agent 主循环</span><br>
+            │&nbsp;&nbsp;├── context.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 对话上下文</span><br>
+            │&nbsp;&nbsp;├── tool_runner.py&nbsp;&nbsp;&nbsp;<span class="comment"># 工具调度</span><br>
+            │&nbsp;&nbsp;└── history.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 对话历史持久化</span><br>
+            ├── tools/<br>
+            │&nbsp;&nbsp;├── registry.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 工具注册表</span><br>
+            │&nbsp;&nbsp;├── file_tools.py&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 文件读写/搜索</span><br>
+            │&nbsp;&nbsp;├── shell_tools.py&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Shell 执行</span><br>
+            │&nbsp;&nbsp;├── web_tools.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 网络搜索</span><br>
+            │&nbsp;&nbsp;└── backup.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 文件备份</span><br>
+            └── project/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;└── indexer.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 项目结构索引</span><br>
+            <br>
+            <span class="comment"># 依赖：rich + prompt_toolkit + httpx</span>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════ Footer ════════════════ -->
+<footer>
+    <div class="container">
+        <p>
+            <a href="https://gitcode.com/fhz1206/CodeMate" target="_blank">GitCode</a>
+            · 由 AtomGit 开发 · 基于 Python 3.11+
+        </p>
+        <p style="margin-top: 8px;">Copyright &copy; 2026 AtomGit. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+// ── Real-time download count from GitHub API ──
+(async function() {
+    const el = document.getElementById('download-count');
+    if (!el) return;
+    try {
+        const resp = await fetch('https://api.github.com/repos/fhz1206/CodeMate/releases');
+        if (!resp.ok) { el.textContent = 'N/A'; return; }
+        const releases = await resp.json();
+        let total = 0;
+        for (const r of releases) {
+            for (const a of (r.assets || [])) {
+                total += a.download_count || 0;
+            }
+        }
+        el.textContent = total.toLocaleString();
+    } catch {
+        el.textContent = 'N/A';
+    }
+})();
+</script>
+
 </body>
 </html>
+
