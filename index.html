@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeMate · AI 终端编程助手</title>
+    <link rel="icon" href="../icon.ico" type="image/x-icon">
     <style>
-        /* ── Reset & Base ── */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
         body {
@@ -13,41 +13,107 @@
             background: #0d1117;
             color: #e6edf3;
             line-height: 1.7;
+            overflow-x: hidden;
         }
         a { color: #58a6ff; text-decoration: none; }
         a:hover { text-decoration: underline; }
-
-        /* ── Container ── */
         .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
 
+        /* ── Animated background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(88,166,255,.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(88,166,255,.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(63,185,80,.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+
+        /* ── Floating particles ── */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: .3; }
+            50% { transform: translateY(-40px) rotate(180deg); opacity: .6; }
+        }
+        .particle {
+            position: fixed;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #58a6ff;
+            pointer-events: none;
+            z-index: 0;
+            animation: float linear infinite;
+        }
+        .particle:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; width: 3px; height: 3px; }
+        .particle:nth-child(2) { left: 20%; animation-duration: 11s; animation-delay: 1s; width: 5px; height: 5px; background: #3fb950; }
+        .particle:nth-child(3) { left: 35%; animation-duration: 9s; animation-delay: 2s; width: 2px; height: 2px; }
+        .particle:nth-child(4) { left: 50%; animation-duration: 13s; animation-delay: .5s; width: 4px; height: 4px; background: #d29922; }
+        .particle:nth-child(5) { left: 65%; animation-duration: 10s; animation-delay: 3s; width: 3px; height: 3px; }
+        .particle:nth-child(6) { left: 75%; animation-duration: 12s; animation-delay: 1.5s; width: 5px; height: 5px; background: #3fb950; }
+        .particle:nth-child(7) { left: 85%; animation-duration: 7s; animation-delay: 2.5s; width: 2px; height: 2px; }
+        .particle:nth-child(8) { left: 95%; animation-duration: 14s; animation-delay: .8s; width: 4px; height: 4px; background: #58a6ff; }
+
         /* ── Hero ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(88,166,255,.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(88,166,255,.6)); }
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
         .hero {
-            padding: 100px 0 80px;
+            padding: 120px 0 80px;
             text-align: center;
-            background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
-            border-bottom: 1px solid #30363d;
+            animation: fadeInUp .8s ease-out;
         }
         .hero-logo {
-            font-size: 56px;
+            font-size: 64px;
             font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, #79c0ff, #58a6ff, #1f6feb);
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #79c0ff, #58a6ff, #1f6feb, #79c0ff);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
+            animation: glow 3s ease-in-out infinite, fadeInUp .8s ease-out .1s backwards;
+            margin-bottom: 12px;
         }
         .hero-sub {
             font-size: 20px;
             color: #8b949e;
             max-width: 600px;
-            margin: 0 auto 32px;
+            margin: 0 auto 24px;
+            animation: fadeInUp .8s ease-out .2s backwards;
         }
+        .hero-version {
+            display: inline-block;
+            font-size: 14px;
+            color: #58a6ff;
+            background: rgba(88,166,255,.1);
+            border: 1px solid rgba(88,166,255,.2);
+            padding: 6px 20px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            animation: fadeInUp .8s ease-out .3s backwards;
+        }
+        .hero-version span { font-weight: 700; }
         .hero-badges {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
             margin-bottom: 40px;
+            animation: fadeInUp .8s ease-out .4s backwards;
         }
         .hero-badges span {
             background: #21262d;
@@ -56,6 +122,12 @@
             border-radius: 20px;
             font-size: 13px;
             border: 1px solid #30363d;
+            transition: all .3s;
+        }
+        .hero-badges span:hover {
+            border-color: #58a6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88,166,255,.2);
         }
         .btn {
             display: inline-block;
@@ -63,16 +135,18 @@
             border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
-            transition: all .2s;
+            transition: all .3s;
             cursor: pointer;
             border: none;
+            animation: fadeInUp .8s ease-out .5s backwards;
         }
         .btn-primary {
-            background: #238636;
+            background: linear-gradient(135deg, #238636, #2ea043);
             color: #fff;
         }
         .btn-primary:hover {
-            background: #2ea043;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(35,134,54,.4);
             text-decoration: none;
         }
         .btn-outline {
@@ -82,54 +156,11 @@
         }
         .btn-outline:hover {
             background: #21262d;
+            border-color: #58a6ff;
+            transform: translateY(-2px);
             text-decoration: none;
         }
         .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-        /* ── Terminal preview ── */
-        .terminal-preview {
-            margin: 0 auto 80px;
-            max-width: 780px;
-            background: #161b22;
-            border-radius: 12px;
-            border: 1px solid #30363d;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,.4);
-        }
-        .terminal-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
-            background: #21262d;
-            border-bottom: 1px solid #30363d;
-        }
-        .terminal-dot {
-            width: 12px; height: 12px;
-            border-radius: 50%;
-        }
-        .terminal-dot:nth-child(1) { background: #ff6b6b; }
-        .terminal-dot:nth-child(2) { background: #ffd93d; }
-        .terminal-dot:nth-child(3) { background: #6bcb77; }
-        .terminal-title {
-            color: #8b949e;
-            font-size: 13px;
-            margin-left: 8px;
-        }
-        .terminal-body {
-            padding: 20px 24px;
-            font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #e6edf3;
-        }
-        .terminal-body .prompt { color: #3fb950; }
-        .terminal-body .cmd { color: #e6edf3; }
-        .terminal-body .output { color: #8b949e; }
-        .terminal-body .highlight { color: #58a6ff; }
-        .terminal-body .dim { color: #484f58; }
-        .blink { animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
 
         /* ── Sections ── */
         section { padding: 80px 0; }
@@ -149,6 +180,10 @@
         }
 
         /* ── Features grid ── */
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -159,14 +194,58 @@
             border-radius: 12px;
             padding: 28px;
             border: 1px solid #30363d;
-            transition: border-color .2s;
+            transition: all .3s;
+            animation: cardIn .6s ease-out backwards;
         }
-        .feature-card:hover { border-color: #58a6ff; }
+        .feature-card:nth-child(1) { animation-delay: .1s; }
+        .feature-card:nth-child(2) { animation-delay: .2s; }
+        .feature-card:nth-child(3) { animation-delay: .3s; }
+        .feature-card:nth-child(4) { animation-delay: .4s; }
+        .feature-card:nth-child(5) { animation-delay: .5s; }
+        .feature-card:nth-child(6) { animation-delay: .6s; }
+        .feature-card:hover {
+            border-color: #58a6ff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(88,166,255,.15);
+        }
         .feature-icon { font-size: 28px; margin-bottom: 12px; }
         .feature-card h3 { font-size: 18px; margin-bottom: 10px; }
         .feature-card p { font-size: 14px; color: #8b949e; }
 
-        /* ── Providers table ── */
+        /* ── Stats counter ── */
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            max-width: 800px;
+            margin: 40px auto 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 24px;
+            background: #21262d;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            animation: countUp .6s ease-out backwards;
+        }
+        .stat-item:nth-child(1) { animation-delay: 0s; }
+        .stat-item:nth-child(2) { animation-delay: .15s; }
+        .stat-item:nth-child(3) { animation-delay: .3s; }
+        .stat-item:nth-child(4) { animation-delay: .45s; }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #79c0ff, #58a6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label { color: #8b949e; font-size: 14px; margin-top: 4px; }
+
+        /* ── Table ── */
         .providers-table {
             width: 100%;
             border-collapse: collapse;
@@ -178,13 +257,10 @@
             border-bottom: 1px solid #30363d;
             font-size: 14px;
         }
-        .providers-table th {
-            color: #8b949e;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
+        .providers-table th { color: #8b949e; font-weight: 600; font-size: 13px; text-transform: uppercase; }
         .providers-table td { color: #c9d1d9; }
+        .providers-table tr { transition: all .2s; }
+        .providers-table tr:hover { background: rgba(88,166,255,.05); }
         .tag {
             display: inline-block;
             padding: 2px 10px;
@@ -207,13 +283,14 @@
             line-height: 1.8;
             overflow-x: auto;
             margin: 20px 0;
+            transition: border-color .3s;
         }
+        .code-block:hover { border-color: #58a6ff; }
         .code-block .comment { color: #484f58; }
         .code-block .key { color: #79c0ff; }
         .code-block .str { color: #a5d6ff; }
-        .code-block .num { color: #d2a8ff; }
 
-        /* ── Commands list ── */
+        /* ── Commands grid ── */
         .cmd-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -228,14 +305,28 @@
             align-items: center;
             gap: 12px;
             font-size: 14px;
+            transition: all .3s;
         }
-        .cmd-key {
-            font-family: monospace;
-            color: #58a6ff;
-            font-weight: 600;
-            white-space: nowrap;
+        .cmd-item:hover {
+            border-color: #58a6ff;
+            transform: translateX(4px);
         }
+        .cmd-key { font-family: monospace; color: #58a6ff; font-weight: 600; white-space: nowrap; }
         .cmd-desc { color: #8b949e; }
+
+        /* ── Changelog ── */
+        .changelog-card {
+            background: #21262d;
+            border-radius: 12px;
+            padding: 28px;
+            border: 1px solid #30363d;
+            margin-bottom: 16px;
+            transition: all .3s;
+        }
+        .changelog-card:hover { border-color: #58a6ff; }
+        .changelog-card h3 { margin: 0; }
+        .changelog-card ul { color: #8b949e; font-size: 14px; padding-left: 20px; line-height: 2; }
+        .changelog-card ul li::marker { color: #58a6ff; }
 
         /* ── Footer ── */
         footer {
@@ -252,7 +343,6 @@
             .hero { padding: 60px 0 40px; }
             .hero-logo { font-size: 36px; }
             .hero-sub { font-size: 16px; }
-            .terminal-body { font-size: 12px; padding: 14px 16px; }
             section { padding: 50px 0; }
             .section-title { font-size: 24px; }
         }
@@ -260,18 +350,29 @@
 </head>
 <body>
 
-<!-- ════════════════ Hero ════════════════ -->
+<!-- Floating particles -->
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+<div class="particle"></div>
+
+<!-- Hero -->
 <header class="hero">
     <div class="container">
         <div class="hero-logo">CodeMate</div>
-        <p class="hero-sub">
-            终端里的 AI 编程搭档 — 支持多模型、自动备份、中英文双语
-        </p>
+        <p class="hero-sub">终端里的 AI 编程搭档 — 多模型 / 自动备份 / 中英文双语 / 记忆系统</p>
+        <div class="hero-version">🚀 最新版本: <span id="version">加载中...</span></div>
         <div class="hero-badges">
             <span>🐍 Python 3.11+</span>
-            <span>🤖 多模型支持</span>
+            <span>🤖 11 个工具</span>
             <span>🔒 自动备份</span>
             <span>🌐 中/英文</span>
+            <span>🧠 记忆系统</span>
+            <span>📦 单目录打包</span>
         </div>
         <div class="hero-actions">
             <a href="#quickstart" class="btn btn-primary">快速开始</a>
@@ -280,52 +381,47 @@
     </div>
 </header>
 
-<!-- ════════════════ Terminal Preview ════════════════ -->
-<div class="container">
-    <div class="terminal-preview">
-        <div class="terminal-header">
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-            <span class="terminal-title">codemate</span>
-        </div>
-        <div class="terminal-body">
-            <span class="prompt">$</span> python -m codemate<br>
-            <span class="dim">┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈</span><br>
-            <span class="highlight">  CodeMate v0.1.0</span><br>
-            <span class="output">  终端 AI 编程助手</span><br>
-            <span class="dim">┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈</span><br>
-            <span class="output">Config file: codemate.toml</span><br>
-            <span class="output">Active provider: stepfun</span><br>
-            <span class="output">Project: CodeMate (25 files)</span><br>
-            <span class="dim">─────────────────────</span><br>
-            <span class="dim">Commands:  /help  /status  /providers  /lang  /history  /exit</span><br>
-            <span class="dim">┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈</span><br>
-            <span class="prompt">>>> </span><span class="cmd">/lang zh</span><br>
-            <span class="output">✓ 语言已切换为中文</span><br>
-            <span class="prompt">>>> </span><span class="cmd">你是谁</span><br>
-            <span class="output">我是 CodeMate，由 AtomGit 开发的 AI 编程助手，</span><br>
-            <span class="output">当前运行在 stepfun 的 step-3.7-flash 模型上。</span><br>
-            <span class="prompt">>>> </span><span class="blink">▊</span>
+<!-- Stats -->
+<section>
+    <div class="container">
+        <h2 class="section-title">数据概览</h2>
+        <p class="section-desc">CodeMate 的规模与能力</p>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">31</div>
+                <div class="stat-label">Python 文件</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">11</div>
+                <div class="stat-label">内置工具</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">运行时依赖</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">内置服务商</div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- ════════════════ Features ════════════════ -->
-<section id="features">
+<!-- Features -->
+<section>
     <div class="container">
         <h2 class="section-title">核心功能</h2>
-        <p class="section-desc">CodeMate 把 AI 能力带到你的终端，像搭档一样帮你写代码</p>
+        <p class="section-desc">CodeMate 把 AI 能力带到你的终端</p>
         <div class="features">
             <div class="feature-card">
                 <div class="feature-icon">🤖</div>
                 <h3>多模型支持</h3>
-                <p>兼容 DeepSeek、OpenAI、Anthropic Claude、Ollama 等任意 OpenAI 兼容 API，通过 TOML 配置文件自由切换。</p>
+                <p>兼容 DeepSeek、OpenAI、Anthropic Claude、Ollama、阶跃星辰等任意 OpenAI 兼容 API，通过 TOML 配置文件自由切换。</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📂</div>
                 <h3>文件操作</h3>
-                <p>读取、写入、编辑、搜索文件和目录，AI 直接操作你的代码库，像有经验的开发者一样高效。</p>
+                <p>读取、写入、编辑、搜索文件和目录，AI 直接操作你的代码库，修改前自动备份，支持 diff 对比。</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💻</div>
@@ -333,25 +429,35 @@
                 <p>在终端中直接运行命令、执行测试、管理 Git 提交，AI 会读取输出并据此调整下一步操作。</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🔍</div>
-                <h3>代码理解</h3>
-                <p>项目索引、符号搜索、引用追踪、代码审查 — AI 深入理解你的项目结构。</p>
+                <div class="feature-icon">🧠</div>
+                <h3>记忆系统</h3>
+                <p>支持项目级和全局级持久化记忆，跨会话保留用户偏好和项目决策，重启不丢失。</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
-                <h3>自动备份</h3>
-                <p>每次修改文件前自动备份原始内容，按对话轮次组织，超出配置数量自动清理，放心让 AI 改代码。</p>
+                <h3>自动备份 + Diff</h3>
+                <p>每次修改文件前自动备份，支持 <code>/diff</code> 命令查看修改前后的红绿对比，安全放心。</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🌐</div>
                 <h3>中英文双语</h3>
-                <p>内置中英文双语支持，输入 `/lang zh` 或 `/lang en` 即可即时切换，LLM 也会用对应语言回复。</p>
+                <p>内置中英文双语支持，输入 <code>/lang zh</code> 或 <code>/lang en</code> 即时切换，LLM 也会用对应语言回复。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>任务列表</h3>
+                <p>AI 自动创建任务清单，逐步执行并标记完成，所有任务记录保存为 <code>.md</code> 文件。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>子代理委派</h3>
+                <p>主 Agent 可创建子代理执行特定任务（如代码审查），子代理有独立上下文，完成后主 Agent 审查整合。</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ════════════════ Providers ════════════════ -->
+<!-- Providers -->
 <section>
     <div class="container">
         <h2 class="section-title">支持的模型服务商</h2>
@@ -366,48 +472,18 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>DeepSeek</td>
-                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
-                    <td>deepseek-chat</td>
-                    <td>✅</td>
-                </tr>
-                <tr>
-                    <td>OpenAI</td>
-                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
-                    <td>gpt-4o</td>
-                    <td>✅</td>
-                </tr>
-                <tr>
-                    <td>Anthropic</td>
-                    <td><span class="tag tag-blue">Anthropic</span></td>
-                    <td>claude-sonnet-4</td>
-                    <td>✅</td>
-                </tr>
-                <tr>
-                    <td>Ollama</td>
-                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
-                    <td>qwen2.5-coder</td>
-                    <td>❌ 本地</td>
-                </tr>
-                <tr>
-                    <td>阶跃星辰</td>
-                    <td><span class="tag tag-green">OpenAI 兼容</span></td>
-                    <td>step-3.7-flash</td>
-                    <td>✅</td>
-                </tr>
-                <tr>
-                    <td>任意自定义</td>
-                    <td><span class="tag tag-yellow">自定义</span></td>
-                    <td>任意</td>
-                    <td>可选</td>
-                </tr>
+                <tr><td>DeepSeek</td><td><span class="tag tag-green">OpenAI 兼容</span></td><td>deepseek-chat</td><td>✅</td></tr>
+                <tr><td>OpenAI</td><td><span class="tag tag-green">OpenAI 兼容</span></td><td>gpt-4o</td><td>✅</td></tr>
+                <tr><td>Anthropic</td><td><span class="tag tag-blue">Anthropic</span></td><td>claude-sonnet-4</td><td>✅</td></tr>
+                <tr><td>Ollama</td><td><span class="tag tag-green">OpenAI 兼容</span></td><td>qwen2.5-coder</td><td>❌ 本地</td></tr>
+                <tr><td>阶跃星辰</td><td><span class="tag tag-green">OpenAI 兼容</span></td><td>step-3.7-flash</td><td>✅</td></tr>
+                <tr><td>OpenRouter</td><td><span class="tag tag-green">OpenAI 兼容</span></td><td>200+ 模型路由</td><td>✅</td></tr>
             </tbody>
         </table>
     </div>
 </section>
 
-<!-- ════════════════ Quick Start ════════════════ -->
+<!-- Quick Start -->
 <section id="quickstart">
     <div class="container">
         <h2 class="section-title">快速开始</h2>
@@ -436,134 +512,103 @@
         <div class="code-block">
             python -m codemate
         </div>
+
+        <h3 style="margin-top: 32px; font-size: 18px;">4️⃣ 打包为 .exe</h3>
+        <div class="code-block">
+            <span class="comment"># 双击 build_exe.bat 即可</span><br>
+            <span class="comment"># 或手动执行:</span><br>
+            pyinstaller --onedir --name codemate --console --add-data <span class="str">"codemate;codemate"</span> --add-data <span class="str">"version.json;."</span> codemate/__main__.py
+        </div>
     </div>
 </section>
 
-<!-- ════════════════ Commands ════════════════ -->
+<!-- Commands -->
 <section>
     <div class="container">
         <h2 class="section-title">命令一览</h2>
         <p class="section-desc">输入 <code>/</code> 后按 Tab 自动补全</p>
         <div class="cmd-list">
-            <div class="cmd-item">
-                <span class="cmd-key">/help</span>
-                <span class="cmd-desc">显示帮助</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/clear</span>
-                <span class="cmd-desc">清除对话历史</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/status</span>
-                <span class="cmd-desc">查看项目状态和配置</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/providers</span>
-                <span class="cmd-desc">查看 codemate.toml 配置</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/lang zh</span>
-                <span class="cmd-desc">切换中文</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/lang en</span>
-                <span class="cmd-desc">切换英文</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/history</span>
-                <span class="cmd-desc">查看对话历史</span>
-            </div>
-            <div class="cmd-item">
-                <span class="cmd-key">/exit</span>
-                <span class="cmd-desc">退出</span>
-            </div>
+            <div class="cmd-item"><span class="cmd-key">/help</span><span class="cmd-desc">显示帮助</span></div>
+            <div class="cmd-item"><span class="cmd-key">/clear</span><span class="cmd-desc">清除对话历史和缓存</span></div>
+            <div class="cmd-item"><span class="cmd-key">/status</span><span class="cmd-desc">查看项目状态和配置</span></div>
+            <div class="cmd-item"><span class="cmd-key">/providers</span><span class="cmd-desc">查看 codemate.toml 配置</span></div>
+            <div class="cmd-item"><span class="cmd-key">/lang zh</span><span class="cmd-desc">切换中文</span></div>
+            <div class="cmd-item"><span class="cmd-key">/lang en</span><span class="cmd-desc">切换英文</span></div>
+            <div class="cmd-item"><span class="cmd-key">/history</span><span class="cmd-desc">查看对话历史</span></div>
+            <div class="cmd-item"><span class="cmd-key">/tool N</span><span class="cmd-desc">查看工具调用完整输出</span></div>
+            <div class="cmd-item"><span class="cmd-key">/diff N</span><span class="cmd-desc">查看文件修改前后对比</span></div>
+            <div class="cmd-item"><span class="cmd-key">/update</span><span class="cmd-desc">检查并应用更新</span></div>
+            <div class="cmd-item"><span class="cmd-key">/exit</span><span class="cmd-desc">退出</span></div>
         </div>
     </div>
 </section>
 
-<!-- ════════════════ Backup ════════════════ -->
-<section>
-    <div class="container">
-        <h2 class="section-title">自动备份</h2>
-        <p class="section-desc">AI 修改文件前的安全网</p>
-        <div style="max-width: 600px; margin: 0 auto;">
-            <div class="code-block">
-                .codemate/<br>
-                └── backups/<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;├── round_1/<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── src/main.py&nbsp;&nbsp;<span class="comment">← 修改前的原始文件</span><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;├── round_2/<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── src/main.py<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;└── round_3/
-            </div>
-            <p style="color: #8b949e; font-size: 14px; text-align: center;">
-                每次对话自动创建新轮次，超出 <code>backup_rounds</code> 配置的旧备份自动清理
-            </p>
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════ Download ════════════════ -->
-<section>
-    <div class="container">
-        <h2 class="section-title">下载</h2>
-        <p class="section-desc">Windows 可执行文件，下载即用，无需安装 Python</p>
-        <div style="text-align: center; margin: 40px 0;">
-            <a href="https://github.com/fhz1206/CodeMate/releases/download/v0.1.0/codemate.exe" class="btn btn-primary" style="font-size: 20px; padding: 18px 48px;">
-                ⬇ 下载 codemate.exe
-            </a>
-            <p style="margin-top: 16px; color: #8b949e; font-size: 14px;">
-                版本 v0.1.0 · Windows 64位 · 已下载 <span id="download-count">加载中...</span> 次
-            </p>
-        </div>
-        <div class="code-block" style="text-align: center;">
-            <span class="comment"># 也可用 pip 安装</span><br>
-            pip install rich prompt_toolkit httpx<br>
-            pip install -e .<br>
-            python -m codemate
-        </div>
-    </div>
-</section>
-
-<!-- ════════════════ Changelog ════════════════ -->
+<!-- Changelog -->
 <section>
     <div class="container">
         <h2 class="section-title">更新日志</h2>
         <p class="section-desc">CodeMate 开发历程</p>
-
         <div style="max-width: 640px; margin: 0 auto;">
-            <div class="feature-card" style="margin-bottom: 16px;">
+            <div class="changelog-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <h3 style="margin: 0;">v0.1.0</h3>
+                    <h3>v1.1.3</h3>
+                    <span style="color: #8b949e; font-size: 13px;">2026-07-08</span>
+                </div>
+                <ul>
+                    <li>新增记忆系统（项目级 + 全局级持久化记忆）</li>
+                    <li>新增子代理委派功能（delegate tool）</li>
+                    <li>新增任务列表工具（create_todo）</li>
+                    <li>新增 /diff 命令，查看文件修改前后对比</li>
+                    <li>重构 UI 层：ui/display.py + ui/commands.py</li>
+                    <li>工具调用着色区分（文件/Shell/网络/任务）</li>
+                    <li>修复 Agent finish 循环 bug</li>
+                    <li>路径穿越安全防护</li>
+                </ul>
+            </div>
+            <div class="changelog-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3>v0.2.0</h3>
+                    <span style="color: #8b949e; font-size: 13px;">2026-07-07</span>
+                </div>
+                <ul>
+                    <li>自动版本检测与更新提示</li>
+                    <li>聊天记录按项目-时间存储</li>
+                    <li>蓝色旋转等待动画</li>
+                </ul>
+            </div>
+            <div class="changelog-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h3>v0.1.0</h3>
                     <span style="color: #8b949e; font-size: 13px;">2026-07-06</span>
                 </div>
-                <ul style="color: #8b949e; font-size: 14px; padding-left: 20px; line-height: 2;">
-                    <li>初始发布，支持多模型服务商（DeepSeek / OpenAI / Anthropic / Ollama / 阶跃星辰）</li>
-                    <li>TOML 配置文件管理，环境变量可覆盖</li>
-                    <li>文件读写 / 编辑 / 搜索 / Shell 执行 / 网络搜索 等工具</li>
+                <ul>
+                    <li>初始发布，支持多模型服务商</li>
+                    <li>TOML 配置文件管理</li>
+                    <li>文件读写 / 编辑 / 搜索 / Shell 执行 / 网络搜索</li>
                     <li>自动备份 — 每次修改文件前保留原始副本</li>
-                    <li>对话历史持久化，按项目-时间组织</li>
                     <li>中英文双语界面，一键切换</li>
-                    <li>Tab 自动补全 / 命令</li>
-                    <li>PyInstaller 打包，Windows .exe 下载即用</li>
+                    <li>PyInstaller 打包，Windows .exe</li>
                 </ul>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ════════════════ Architecture ════════════════ -->
+<!-- Architecture -->
 <section>
     <div class="container">
         <h2 class="section-title">项目架构</h2>
-        <p class="section-desc">纯粹的 Python 3.11+，25 个文件，3 个依赖</p>
+        <p class="section-desc">31 个 Python 文件，3 个运行时依赖，干净的分层设计</p>
         <div class="code-block">
             codemate/<br>
             ├── __main__.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 入口</span><br>
-            ├── cli.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 终端交互界面</span><br>
+            ├── cli.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 终端交互主循环</span><br>
             ├── i18n.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 国际化（中/英文）</span><br>
             ├── config/<br>
             │&nbsp;&nbsp;└── settings.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># TOML + 环境变量配置</span><br>
+            ├── ui/<br>
+            │&nbsp;&nbsp;├── display.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 界面渲染</span><br>
+            │&nbsp;&nbsp;└── commands.py&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 命令处理</span><br>
             ├── llm/<br>
             │&nbsp;&nbsp;├── prompts.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 系统提示词</span><br>
             │&nbsp;&nbsp;├── providers.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 服务商工厂</span><br>
@@ -575,20 +620,25 @@
             │&nbsp;&nbsp;├── tool_runner.py&nbsp;&nbsp;&nbsp;<span class="comment"># 工具调度</span><br>
             │&nbsp;&nbsp;└── history.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 对话历史持久化</span><br>
             ├── tools/<br>
-            │&nbsp;&nbsp;├── registry.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 工具注册表</span><br>
+            │&nbsp;&nbsp;├── registry.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 工具注册表 (11 tools)</span><br>
             │&nbsp;&nbsp;├── file_tools.py&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 文件读写/搜索</span><br>
             │&nbsp;&nbsp;├── shell_tools.py&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Shell 执行</span><br>
             │&nbsp;&nbsp;├── web_tools.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 网络搜索</span><br>
-            │&nbsp;&nbsp;└── backup.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 文件备份</span><br>
+            │&nbsp;&nbsp;├── backup.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 文件备份 + diff</span><br>
+            │&nbsp;&nbsp;├── todo_tools.py&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 任务列表</span><br>
+            │&nbsp;&nbsp;├── delegate.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 子代理委派</span><br>
+            │&nbsp;&nbsp;├── memory.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 记忆系统</span><br>
+            │&nbsp;&nbsp;└── updater.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 版本检查</span><br>
             └── project/<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;└── indexer.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 项目结构索引</span><br>
-            <br>
-            <span class="comment"># 依赖：rich + prompt_toolkit + httpx</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;└── indexer.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># 项目结构索引</span>
         </div>
+        <p style="text-align: center; color: #484f58; font-size: 13px; margin-top: 16px;">
+            依赖: <code>rich</code> · <code>prompt_toolkit</code> · <code>httpx</code>
+        </p>
     </div>
 </section>
 
-<!-- ════════════════ Footer ════════════════ -->
+<!-- Footer -->
 <footer>
     <div class="container">
         <p>
@@ -600,27 +650,22 @@
 </footer>
 
 <script>
-// ── Real-time download count from GitHub API ──
+// ── Fetch version from remote ──
 (async function() {
-    const el = document.getElementById('download-count');
-    if (!el) return;
-    try {
-        const resp = await fetch('https://api.github.com/repos/fhz1206/CodeMate/releases');
-        if (!resp.ok) { el.textContent = 'N/A'; return; }
-        const releases = await resp.json();
-        let total = 0;
-        for (const r of releases) {
-            for (const a of (r.assets || [])) {
-                total += a.download_count || 0;
-            }
+
+// ── Scroll animation: reveal cards on scroll ──
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.animationPlayState = 'running';
         }
-        el.textContent = total.toLocaleString();
-    } catch {
-        el.textContent = 'N/A';
-    }
-})();
+    });
+});
+document.querySelectorAll('.feature-card, .stat-item, .changelog-card').forEach(el => {
+    el.style.animationPlayState = 'paused';
+    observer.observe(el);
+});
 </script>
 
 </body>
 </html>
-
